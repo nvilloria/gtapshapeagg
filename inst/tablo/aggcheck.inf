@@ -1,0 +1,308 @@
+
+    TTTTTTTTTT  AAAAAAAAAA   BBBBBBB      LLLL        OOOOOOOOOO
+    TTTTTTTTTT  AAA    AAA   BBBBBBBBB    LLLL        OOOOOOOOOO
+       TTT      AAA    AAA   BBB    BBB   LLLL        OOO    OOO
+       TTT      AAA    AAA   BBB  BBB     LLLL        OOO    OOO
+       TTT      AAAAAAAAAA   BBBBBBB      LLLL        OOO    OOO
+       TTT      AAAAAAAAAA   BBB  BBB     LLLL        OOO    OOO
+       TTT      AAA    AAA   BBB    BBB   LLLL        OOO    OOO
+       TTT      AAA    AAA   BBBBBBBBB    LLLLLLLLL   OOOOOOOOOO
+       TTT      AAA    AAA   BBBBBBB      LLLLLLLLL   OOOOOOOOOO
+
+ <TABLO  Version 7.0   August 2018>                                    
+
+
+
+
+
+                     GEMPACK SOFTWARE
+     << COPYRIGHT 1987-2018:  The Impact Project and KPSOFT >>
+   
+   
+
+    +++  INFORMATION ABOUT THIS PRINT FILE  +++
+   
+
+ ! This file was created at 10:42:58 on 24-JAN-2025 by the program
+ !  <TABLO  Version 7.0   August 2018>
+ ! which accesses some of the routines in the GEMPACK software release
+ !  <GEMPACK Release 12.1.004   January 2020>
+ 
+ !     -------------------------------------------------------                
+ !    !            GEMPACK Software System Licence            !               
+ !    !  Single-user Source-code Licence for GEMPACK on a PC  !               
+ !    !                 Licence No.  GFS-1482                 !               
+ !    !          Licence for Release 12.2 of GEMPACK          !               
+ !    !                  Nelson B. Villoria                   !               
+ !    !             Named User-Nelson B. Villoria             !               
+ !    !                  Licence OS-Windows                   !               
+ !    !    (Your GEMPACK licence expires on 31-MAR-2025.)     !               
+ !     -------------------------------------------------------                
+    
+
+    +++  END OF INFORMATION ABOUT THIS PRINT FILE  +++
+
+ ======================================================
+           TABLO PORTABLE   
+ ++> TABLO OPTIONS   ( --> indicates those in effect )
+ ======================================================
+
+
+
+      -----------                   ----------
+  --> F1 CHECK                  --> L1 CHECK
+      F2 CONDENSATION               L2 CONDENSATION
+      F3 CODE GENERATION            L3 CODE GENERATION
+      Mode
+      ----
+      INTERACTIVE
+      BATCH
+  --> UNSPECIFIED
+
+
+ ==================================================
+ ++> TABLO Input file is 'aggcheck.tab'
+ ++> This Information file is 'aggcheck'
+ ==================================================
+
+
+
+ ******************************************************************************
+ -1-
+ -->                     Starting CHECK stage
+
+ ******************************************************************************
+
+
+      1   !============================================================================!
+      2   ! AGGDAT.TAB: Data Aggregation TAB file                                      !
+      3   ! GTAP Data Base Version 6 (2004)                                             !
+      4   ! This file reads the global data, aggregates the value flows, and           !
+      5   !      generates an aggregated database.                                     !
+      6   !============================================================================!
+      7    
+      8   EQUATION (NONE);
+      9    
+     10   !============================================================================!
+     11   ! Input files                                                                !
+     12   !============================================================================!
+     13    
+     14    
+     15   FILE DSETS     # Set specification for disaggregate data #;
+     16   FILE ASETS     # Set specification for aggregate data    #;
+     17    
+     18   !============================================================================!
+     19   ! Output file                                                                !
+     20   !============================================================================!
+     21    
+     22   FILE (new) checkmap;
+     23    
+     24    
+     25   !============================================================================!
+     26   ! Sets for dis-aggregate data                                                !
+     27   !============================================================================!
+     28    
+     29   SET DREG       # REGIONS #
+     30       READ ELEMENTS FROM FILE DSETS HEADER "H1";
+     31    
+     32   SET DTRAD_COMM # TRADED COMMODITIES #
+     33       READ ELEMENTS FROM FILE DSETS HEADER "H2";
+     34    
+     35   !NV, 7/11/2024" Changed H6 to ENDZ!
+     36   ![[!
+     37   SET DENDW_COMM  # ENDOWMENT COMMODITIES #
+     38       READ ELEMENTS FROM FILE DSETS HEADER "H6";
+     39   !]]!
+     40    
+     41    
+     42   SET DENDW_COMM  # ENDOWMENT COMMODITIES #
+     43       READ ELEMENTS FROM FILE DSETS HEADER "ENDZ";
+     44    
+     45   !============================================================================!
+     46   ! Sets for aggregate data                                                    !
+     47   !============================================================================!
+     48    
+     49   SET REG       # REGIONS IN AGGREGATE DATA SET #
+     50       READ ELEMENTS FROM FILE ASETS HEADER "H1";
+     51    
+     52   SET TRAD_COMM # TRADED COMMODITIES #
+     53       READ ELEMENTS FROM FILE ASETS HEADER "H2";
+     54    
+     55   SET ENDW_COMM  # ENDOWMENT COMMODITIES #
+     56       READ ELEMENTS FROM FILE ASETS HEADER "H6";
+     57    
+     58   !============================================================================!
+     59   !                    READING AGGREGATION SCHEME                              !
+     60   !============================================================================!
+     61    
+     62   MAPPING COM FROM DTRAD_COMM TO TRAD_COMM;
+     63            READ (BY_ELEMENTS) COM FROM FILE ASETS HEADER "DCOM";
+     64    
+     65   MAPPING REGD FROM DREG TO REG;
+     66            READ (BY_ELEMENTS) REGD FROM FILE ASETS HEADER "DREG";
+     67    
+     68   MAPPING ENDD FROM DENDW_COMM TO ENDW_COMM;
+     69            READ (BY_ELEMENTS) ENDD FROM FILE ASETS HEADER "DEND";
+     70    
+     71    
+     72   write (set) REG to file checkmap header "REG";
+     73   write (set) TRAD_COMM to file checkmap header "TRAD";
+     74   write (set) ENDW_COMM to file checkmap header "ENDW";
+     75    
+     76   !write (by_elements) D2AMARG TO FILE GSETS HEADER "MMAR" longname
+     77       "Margin commodities aggregation mapping";!
+     78   !====================== END OF FILE AGGDAT.TAB ==============================!
+
+
+MESSAGE(S) ABOUT APPARENTLY REDUNDANT STATEMENTS
+------------------------------------------------
+
+ READ into 'COM' starting at line 63.
+
+ %%WARNING.  This read appears to be redundant because
+    the coefficient 'COM' affected by it occurs in no equation
+    update or 'ORIG_LEVEL=' qualifier, nor on the right hand side of any
+    subsequent formula, nor in any subsequent DISPLAY,
+    ZERODIVIDE, WRITE or SET statement.
+
+ READ into 'REGD' starting at line 66.
+
+ %%WARNING.  This read appears to be redundant because
+    the coefficient 'REGD' affected by it occurs in no equation
+    update or 'ORIG_LEVEL=' qualifier, nor on the right hand side of any
+    subsequent formula, nor in any subsequent DISPLAY,
+    ZERODIVIDE, WRITE or SET statement.
+
+ READ into 'ENDD' starting at line 69.
+
+ %%WARNING.  This read appears to be redundant because
+    the coefficient 'ENDD' affected by it occurs in no equation
+    update or 'ORIG_LEVEL=' qualifier, nor on the right hand side of any
+    subsequent formula, nor in any subsequent DISPLAY,
+    ZERODIVIDE, WRITE or SET statement.
+
+COEFFICIENT INITIALIZATION SUMMARY
+----------------------------------
+
+ %% NOTE the 3 WARNING(s) above about coefficients.
+
+MESSAGE(S) ABOUT UNUSED COEFFICIENTS
+------------------------------------
+
+ %%WARNING.  Coefficient 'COM' is declared but is not used in the linear system.
+
+ %%WARNING.  Coefficient 'REGD' is declared but is not used in the linear system.
+
+ %%WARNING.  Coefficient 'ENDD' is declared but is not used in the linear system.
+
+
+
+
+ ========================
+ ++ INPUT STATEMENT TABLE
+ ========================
+
+          Starts   Syntax  Semantic
+  Number  at line  Error?   Error?            Description
+  ------------------------------------------------------------
+     1        15     no       no      FILE 'DSETS'                            
+     2        16     no       no      FILE 'ASETS'                            
+     3        22     no       no      FILE 'checkmap'                         
+     4        29     no       no      SET 'DREG'                              
+     5        32     no       no      SET 'DTRAD_COMM'                        
+     6        42     no       no      SET 'DENDW_COMM'                        
+     7        49     no       no      SET 'REG'                               
+     8        52     no       no      SET 'TRAD_COMM'                         
+     9        55     no       no      SET 'ENDW_COMM'                         
+    10        62     no       no      MAPPING 'COM'                           
+    11        63     no       no      READ into 'COM'                         
+    12        65     no       no      MAPPING 'REGD'                          
+    13        66     no       no      READ into 'REGD'                        
+    14        68     no       no      MAPPING 'ENDD'                          
+    15        69     no       no      READ into 'ENDD'                        
+    16        72     no       no      WRITE of set 'REG'                      
+    17        73     no       no      WRITE of set 'TRAD_COMM'                
+    18        74     no       no      WRITE of set 'ENDW_COMM'                
+
+
+
+
+ ============
+ ++ SET TABLE
+ ============
+
+                    Defined   [Max] Inter             Set numbers this
+  Number    Name    at line    Size temp? Elements    is subset of
+  ---------------------------------------------------------------------
+     1  DREG           29 [       0]  no   read 
+     2  DTRAD_COMM     32 [       0]  no   read 
+     3  DENDW_COMM     42 [       0]  no   read 
+     4  REG            49 [       0]  no   read 
+     5  TRAD_COMM      52 [       0]  no   read 
+     6  ENDW_COMM      55 [       0]  no   read 
+
+
+
+
+ =============
+ ++ FILE TABLE
+ =============
+
+         Logical            Defined  File  File
+  Number  Name              at line  Type  Form  Actual name (if given)
+  --------------------------------------------------------------------
+     1  DSETS                   15    old  head
+     2  ASETS                   16    old  head
+     3  checkmap                22    new  head
+
+
+
+
+ ====================
+ ++ COEFFICIENT TABLE
+ ====================
+
+                        Defined  No            Arguments range
+  Number    Name        at line  Args Type     over sets numbered
+  ------------------------------------------------------------
+     1    COM               62     1  int        2
+     2    REGD              65     1  int        1
+     3    ENDD              68     1  int        3
+
+
+
+
+ =============
+ ++ READ TABLE
+ =============
+
+           Defined    Semantic  Coefficient   File number
+  Number   at line     Error?    read into     read from   Header
+  ---------------------------------------------------------------
+     1         63       no      COM                 2       DCOM
+     2         66       no      REGD                2       DREG
+     3         69       no      ENDD                2       DEND
+
+
+
+
+ ==============
+ ++ WRITE TABLE
+ ==============
+
+        Defined   Sem     Coeff/Var     Write
+ Number at line  Error?   written       file   Header     Long Name
+ --------------------------------------------------------------------------------
+     1       72   no      REG               3  REG     Not defined by the user
+     2       73   no      TRAD_COMM         3  TRAD    Not defined by the user
+     3       74   no      ENDW_COMM         3  ENDW    Not defined by the user
+
+
+   
+ ======================
+ ++ INPUT CHECK SUMMARY
+ ======================
+
+ Total number of statements is 18.
+ There are NO syntax errors or semantic problems.
+! (Model Information file is 'aggcheck.mnc'.)

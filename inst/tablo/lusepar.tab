@@ -1,0 +1,82 @@
+File GTAPSETS;
+File ALLPARAM;
+File (new) NEWPARM;
+
+Set AEZ_COMM read elements from file GTAPSETS header "AEZ";
+Set REG read elements from file GTAPSETS header "H1";
+
+!<Dynamic definition of the set of land-commodities>!
+Set 
+    DTRAD_COMM # traded commodities #
+    maximum size 10 read elements from file GTAPSETS header "DH2";
+Set 
+    TRAD_COMM # traded commodities #
+    maximum size 10 read elements from file GTAPSETS header "H2";
+
+!Sectoral mapping from GTAP to model TRAD_COMM commodities is needed for other
+mapping subsets of TRAD_COMM onto the land comm, forests, crops, graze, etc.!
+
+Mapping G2TRAD_COMM from DTRAD_COMM to TRAD_COMM;
+Read (BY_ELEMENTS) G2TRAD_COMM from file GTAPSETS header "MCOM";
+
+!<Dynamic Agregated Land Commodity Set Definition>!
+
+!NV, 7/11/2024: Read land use sets from set files!
+![[!
+Set 
+    DLAND_COMM #Land commodities in GTAP Version 7 that have Land rents#
+    (pdr,wht,gro,v_f,osd,c_b,pfb,ocr,ctl,rmk,wol,frs);
+!]]!
+Set 
+    DLAND_COMM #Land commodities in GTAP Version 7 that have Land rents#
+    read elements from file GTAPSETS header "AGFL";
+
+Subset DLAND_COMM is subset of DTRAD_COMM;
+
+COEFFICIENT (all,c,DTRAD_COMM) UNITVEC0(c) #Auxiliary unit vector#;
+FORMULA (all,c,DTRAD_COMM) UNITVEC0(c)=1;
+
+COEFFICIENT (all,i,TRAD_COMM) ISLAND(i) #Is a land Commodity?#;
+FORMULA (all,i,TRAD_COMM)
+ISLAND(i)= sum{c, DLAND_COMM: G2TRAD_COMM(c) eq i, UNITVEC0(c) };
+
+SET LAND_COMM = (all, i, TRAD_COMM : ISLAND(i)>0);
+
+MAPPING G2LAND_COMM from  DLAND_COMM to LAND_COMM;
+FORMULA (all,c,DLAND_COMM) G2LAND_COMM(c)=G2TRAD_COMM(c);
+!<End of Dynamic Agregated Land Commodity Set Definition>!
+
+Coefficient (parameter)(all,j,LAND_COMM) ESUBAEZ(j)
+    # elst. of sub. amongst AEZs in land composite of land using sector j #;
+Formula  (all,j,LAND_COMM) ESUBAEZ(j) = 20;
+
+Coefficient (parameter) (all,i,AEZ_COMM)(all,r,REG) ETRAEL1(i,r)
+    # elst. of transformation between forestry and agriculture #;
+Formula (all,i,AEZ_COMM)(all,r,REG) ETRAEL1(i,r) = -0.20;
+
+Coefficient (parameter)(all,i,AEZ_COMM)(all,r,REG) ETRAEL2(i,r)
+    # elst. of transformation between pastures and crops #;
+Formula (all,i,AEZ_COMM)(all,r,REG) ETRAEL2(i,r) = -0.5;
+
+Coefficient (parameter)(all,i,AEZ_COMM)(all,r,REG) ETRAEL3(i,r)
+    # elst. of transformation among crops #;
+Formula (all,i,AEZ_COMM)(all,r,REG) ETRAEL3(i,r) = -1;
+
+Coefficient (parameter)(all,i,AEZ_COMM)(all,r,REG) ETA(i,r) # elasticity of output with respect to acreage expansion #;
+Formula (all,i,AEZ_COMM)(all,r,REG) ETA(i,r) = 0.66;
+
+!Write parameters!
+Write ESUBAEZ to file NEWPARM header "ESBL" longname
+    "elst. of sub. amongst AEZs in land composite of land using sector j"; 
+Write ETRAEL1 to file NEWPARM header "ETL1" longname
+    "elst. of transformation between Forestry and Agriculture";
+Write ETRAEL2 to file NEWPARM header "ETL2" longname
+    "elst. of transformation between pastures and crops";
+Write ETRAEL3 to file NEWPARM header "ETL3" longname
+    "elst. of transformation among crops";
+Write ETA to file NEWPARM header "ETA" longname
+    "elasticity of output with respect to acreage expansion";
+
+!Brings the rest of the Paarmeters so all of them are in one file!
+transfer unwritten from file ALLPARAM to file NEWPARM;
+

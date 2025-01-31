@@ -1,0 +1,143 @@
+!< Adds physical data to GTAP database + Land Rents
+The preffix G is for GTAP and M is for model. L is used
+for land. Thus G2LAND_COMM is GTAP to model land commodities >!
+
+File PHYSDATA # Physical data on Area, Production, and Land Cover #;
+File MODELSETS;
+File (new) LUSEDAT;
+File (new) LUSESET;
+File GTAPDATA;
+File GTAPSET;
+
+
+!SETS!
+Set DREG # GTAP Regions#
+ read elements from file MODELSETS header "DH1";
+Set DTRAD_COMM # GTAP Sectors#
+ read elements from file MODELSETS header "DH2";
+Set DENDW_COMM # GTAP Endowments#
+ read elements from file MODELSETS header "DH6";
+
+Set DENDWL_COMM #Land endowments#
+read elements from file PHYSDATA header "AEZS";   !ADD THIS HEADER TO PHYSDATA!
+Subset DENDWL_COMM is subset of DENDW_COMM;
+
+Set LAND_COVER #Land covers for model#
+read elements from file PHYSDATA header "COVS";  !ADD THIS HEADER TO PHYSDATA!
+
+Set REG #Regions in the model#
+read elements from file MODELSETS header "H1";
+Set TRAD_COMM #Sectors in in the model#
+read elements from file MODELSETS header "H2";
+Set ENDW_COMM # GTAP Endowments#
+ read elements from file MODELSETS header "H6";
+
+Set DLAND_COMM #GTAP land Commodities#
+ read elements from file PHYSDATA header "LCOM"; !ADD THIS HEADER TO PHYSDATA!
+ Subset DLAND_COMM is subset of DTRAD_COMM;
+
+!MAPS!
+!Regional mapping from GTAP to model regions!
+Mapping G2REG from DREG to REG;
+ Read (BY_ELEMENTS) G2REG from file MODELSETS header "MREG";
+
+!Sectoral mapping from GTAP to model TRAD_COMM commodities!
+Mapping G2TRAD_COMM from DTRAD_COMM to TRAD_COMM;
+Read (BY_ELEMENTS) G2TRAD_COMM from file MODELSETS header "MCOM";
+!<Dynamic Agregated Land Commodity Set Definition>!
+COEFFICIENT (all,c,DTRAD_COMM) UNITVEC(c) #Auxiliary unit vector#;
+FORMULA (all,c,DTRAD_COMM) UNITVEC(c)=1;
+
+COEFFICIENT (all,i,TRAD_COMM) ISAGRI(i) #Is a land Commodity?#;
+FORMULA (all,i,TRAD_COMM)
+ISAGRI(i)= sum{c, DLAND_COMM: G2TRAD_COMM(c) eq i, UNITVEC(c) };
+
+SET LAND_COMM = (all, i, TRAD_COMM : ISAGRI(i)>0);
+
+MAPPING G2LAND_COMM from  DLAND_COMM to LAND_COMM;
+FORMULA (all,c,DLAND_COMM) G2LAND_COMM(c)=G2TRAD_COMM(c);
+!<End of Dynamic Agregated Land Commodity Set Definition>!
+
+!Sectoral mapping from GTAP to model LAND endowments!
+Mapping G2ENDW_COMM from DENDW_COMM to ENDW_COMM;
+Read (BY_ELEMENTS) G2ENDW_COMM from file MODELSETS header "MEND";
+
+COEFFICIENT (all,c,DENDW_COMM) UNITVEC1(c) #Auxiliary unit vector#;
+FORMULA (all,c,DENDW_COMM) UNITVEC1(c)=1;
+
+COEFFICIENT (all,i,ENDW_COMM) ISAEZ(i) #Is an AEZ Commodity?#;
+FORMULA (all,i,ENDW_COMM)
+ISAEZ(i)= sum{c, DENDWL_COMM: G2ENDW_COMM(c) eq i, UNITVEC1(c) };
+
+SET ENDWL_COMM = (all, i, ENDW_COMM : ISAEZ(i)>0);
+
+MAPPING G2ENDWL_COMM from  DENDWL_COMM to ENDWL_COMM;
+FORMULA (all,c,DENDWL_COMM) G2ENDWL_COMM(c)=G2ENDW_COMM(c);
+!<End of Dynamic Agregated Land Commodity Set Definition!
+
+
+
+!DATA!
+! Read Physical data to be agDREGated!
+Coefficient (all,R,DREG)(all,J,DENDWL_COMM) (all,I,DLAND_COMM) 
+ PRODN(R,J,I) #PRODNuction in tones#;
+Read PRODN from file PHYSDATA header "SGPD"; !This is SGPD now; it was TONS!
+
+Coefficient (all,R,DREG)(all,J,DENDWL_COMM) (all,I,DLAND_COMM)
+ HAREA(R,J,I) #Harvested area in ha#;
+Read HAREA from file PHYSDATA header "SGHA"; !This is SGHA now; it was AREA!
+
+Coefficient  (all,R,DREG)(all,J,DENDWL_COMM) (all,L,LAND_COVER)
+ LCOVER(R,J,L) #Land cover in ha#;
+Read LCOVER from file PHYSDATA header "SGLC"; !This is SGLC now; it was LCOV!
+
+!DATA AGGREGATION!
+Coefficient (all,E,ENDWL_COMM) (all,K,LAND_COMM) (all,S,REG)
+ MPRODN(E,K,S) #PRODNuction in tones#;
+Formula (all,E,ENDWL_COMM) (all,K,LAND_COMM) (all,S,REG)
+MPRODN(E,K,S) = sum{J, DENDWL_COMM: G2ENDWL_COMM(J) eq E,
+    sum{I, DLAND_COMM: G2LAND_COMM(I) eq K,
+        sum{R, DREG: G2REG(R) eq S,
+            PRODN(R,J,I)}}};
+
+Coefficient (all,E,ENDWL_COMM) (all,K,LAND_COMM) (all,S,REG)
+ MHAREA(E,K,S) #Harvested area in ha#;
+Formula (all,E,ENDWL_COMM) (all,K,LAND_COMM) (all,S,REG)
+MHAREA(E,K,S) = sum{J, DENDWL_COMM: G2ENDWL_COMM(J) eq E,
+    sum{I, DLAND_COMM: G2LAND_COMM(I) eq K,
+        sum{R, DREG: G2REG(R) eq S,
+        HAREA(R,J,I)}}};
+
+Coefficient (all,E,ENDWL_COMM) (all,L,LAND_COVER)  (all,S,REG)
+ MLCOVER(E,L,S) #Harvested area in ha#;
+Formula (all,E,ENDWL_COMM) (all,L,LAND_COVER) (all,S,REG)
+MLCOVER(E,L,S) = sum{R, DREG: G2REG(R) eq S,
+    sum{J, DENDWL_COMM: G2ENDWL_COMM(J) eq E,
+        LCOVER(R,J,L)}};
+
+!Produce a new har file with the physical data plus the land rents!
+Write MPRODN to file LUSEDAT header "TONS"
+ longname "Production in tonnes";
+Write MHAREA to file LUSEDAT header "AREA"
+ longname "Harvested area in ha";
+Write MLCOVER to file LUSEDAT header "LCOV"
+ longname "Land cover in ha";
+
+Transfer unwritten from file GTAPDATA to file LUSEDAT;  
+
+!Add the sets here to the main set file!
+!Write (Set) LAND_COMM to file LUSESET header "LCOM"
+longname "Set of land-using commodities";!
+Write (Set) ENDWL_COMM to file LUSESET header "AEZS"
+longname "Set ENDWL_COMM of AEZs forming the land endowment";
+Write (Set) LAND_COVER to file LUSESET header "COVS"
+longname "Set LAND_COVER of Land covers";
+Write (by_elements) G2LAND_COMM to file LUSESET header "MLND"
+longname "mapping to aggregate land-using commodities with avail. phys. data";
+Write (by_elements) G2ENDWL_COMM to file LUSESET header "MAEZ"
+longname "mapping to aggregate land-using endowments AEZs";
+
+!This is just for gettingthe set of land commodities our of the land rents data!
+File LCOMMSET;
+
+Transfer unwritten from file GTAPSET to file LUSESET;
