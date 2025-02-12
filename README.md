@@ -1,52 +1,69 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # gtapshapeagg
 
-<!-- badges: start -->
-<!-- badges: end -->
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-The goal of gtapshapeagg is to …
+## Overview
+
+`gtapshapeagg` is an R package that implements **FlexAgg**, a data
+aggregation tool, and provides additional functionality to split
+national land rents into subnational boundaries. The package is designed
+to work seamlessly with files produced by the `gtapshapeagg` package,
+making it an essential tool for users working with GTAP-related data.
+
+Key features include: - **FlexAgg implementation**: A flexible data
+aggregation system. - **Subnational rent allocation**: A module for
+distributing national land rents across subnational boundaries.
 
 ## Installation
 
-You can install the development version of gtapshapeagg from
-[GitHub](https://github.com/) with:
+You can install the development version of `gtapshapeagg` directly from
+GitHub using the following commands:
 
 ``` r
-# install.packages("pak")
-pak::pak("nvilloria/gtapshapeagg")
+# Install devtools if you don't already have it
+install.packages("devtools")
+
+# Install gtapshapeagg from GitHub
+devtools::install_github("yourusername/gtapshapeagg")
 ```
 
-## Example
+Replace `"yourusername"` with your actual GitHub username.
 
-This is a basic example which shows you how to solve a common problem:
+## Usage
+
+Here’s a basic example of how to use `gtapshapeagg`:
 
 ``` r
+# Load the package
 library(gtapshapeagg)
-## basic example code
+
+# Example 1: Using FlexAgg functionality
+result <- flexagg_function(data, parameters)
+print(result)
+
+# Example 2: Splitting national land rents into subnational boundaries
+subnational_rents <- split_land_rents(national_data, boundary_file)
+print(subnational_rents)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+Replace `data`, `parameters`, `national_data`, and `boundary_file` with
+your actual datasets and input files.
 
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
+## Dependencies
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+The package depends on the following R packages: - `dplyr` - `sf` -
+Other dependencies will be automatically installed during installation.
 
-You can also embed plots, for example:
+## Contributing
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+Contributions are welcome! If you encounter any issues or have
+suggestions for improvement, please open an issue or submit a pull
+request on [GitHub](https://github.com/yourusername/gtapshapeagg).
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+## License
+
+This package is licensed under the MIT License. See the `LICENSE.md`
+file for details.
+
+------------------------------------------------------------------------
