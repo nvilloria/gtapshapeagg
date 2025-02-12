@@ -32,7 +32,7 @@
 #' splitlr("landdata.har", "landsets.har", "gtapsets.har", "basedata.har", "forestdata.har", "output_dir")
 #' }
 #'
-splitlr2  <- function(landdat = NULL,
+splitlr  <- function(landdat = NULL,
                       landsets = NULL,
                       stdgtapsets,
                       stdgtapdata,

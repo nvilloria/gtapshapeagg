@@ -5,15 +5,26 @@
 
 ## Overview
 
-`gtapshapeagg` is an R package that implements **FlexAgg**, a data
-aggregation tool, and provides additional functionality to split
-national land rents into subnational boundaries. The package is designed
-to work seamlessly with files produced by the `gtapshapeagg` package,
-making it an essential tool for users working with GTAP-related data.
+`gtapshapeagg` is an R package that implements
+[**FlexAgg2**]((https://www.gtap.agecon.purdue.edu/databases/flexagg2.asp)),
+to aggregate the regions and countries of the GTAP database using a
+standard aggregation template written as a GEMPACK text file.
 
-Key features include: - **FlexAgg implementation**: A flexible data
-aggregation system. - **Subnational rent allocation**: A module for
-distributing national land rents across subnational boundaries.
+`gtapshapeagg` provides additional functionality to split the regional
+land rents in the standard GTAP database to subnational boundaries, such
+as Agroecological Zones. The package is designed to work seamlessly with
+files produced by the `gtapshapeagg` package.
+
+`gtapshapeagg` takes advantage of R’s scripting capabilities to organize
+the execution of several GEMPACK programs. The source code of these
+programs is provided with `gtapshapeagg`. To make them operational they
+must be compiled by running `setup_gtapshapeagg()`.
+`setup_gtapshapeagg()` creates fortran executable files of the needed
+gempack programs and places them in the subfolder `gempack` in the
+current working directory \[i.e., `getwd()`\]. The workflow assumes that
+the computer is already setup to [compile source-code GEPMPACK
+programs](https://www.copsmodels.com/gpinstall.pdf) and the user is
+responsible for securing the necessary sofware licences.
 
 ## Installation
 
@@ -25,10 +36,8 @@ GitHub using the following commands:
 install.packages("devtools")
 
 # Install gtapshapeagg from GitHub
-devtools::install_github("yourusername/gtapshapeagg")
+devtools::install_github("nvilloria/gtapshapeagg")
 ```
-
-Replace `"yourusername"` with your actual GitHub username.
 
 ## Usage
 
@@ -39,27 +48,25 @@ Here’s a basic example of how to use `gtapshapeagg`:
 library(gtapshapeagg)
 
 # Example 1: Using FlexAgg functionality
-result <- flexagg_function(data, parameters)
-print(result)
 
 # Example 2: Splitting national land rents into subnational boundaries
-subnational_rents <- split_land_rents(national_data, boundary_file)
-print(subnational_rents)
+splitlr(
+    landdat = "./from-gtapshape/gtaplulc.har",## From gtapshape
+    landsets = "./from-gtapshape/gtaplulc-sets.har",  ## From gtapshape
+    stdgtapsets="./GTAPv11c/gsdgset11cMV6.har", # <- Standard GTAP database
+    stdgtapdata="./GTAPv11c/gsdgdat11cMV6.har" , # <- Standard GTAP database
+    dir= "AEZ18v11c" # <- Directory where to output landgtapsets and landgtapdat
+)
+
+m <- system.file("mappings", "my_agg_AEZ18.txt", package = "gtapshapeagg")
+
+createdat(mapfile = m, ## Aggregation mapping
+          setfile = "./AEZ18v11c/landgtapsets.har", ## from splitlr()
+          datfile = "./AEZ18v11c/landgtapdat.har", ## from splitlr()
+          stdprm =  "./GTAPv11c/gsdgpar11cMV6.har", # Standard GTAP parameters
+          dir = "My_18AEZagg" ## Directory with aggregated data
+          )
 ```
-
-Replace `data`, `parameters`, `national_data`, and `boundary_file` with
-your actual datasets and input files.
-
-## Dependencies
-
-The package depends on the following R packages: - `dplyr` - `sf` -
-Other dependencies will be automatically installed during installation.
-
-## Contributing
-
-Contributions are welcome! If you encounter any issues or have
-suggestions for improvement, please open an issue or submit a pull
-request on [GitHub](https://github.com/yourusername/gtapshapeagg).
 
 ## License
 
