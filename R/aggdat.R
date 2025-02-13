@@ -41,7 +41,7 @@ aggdat <- function(mapfile,
     ## aggcheck() reads aggregation mappings in the aggregation input file and
     ## creates gmap.har:, and checks the consistency between the sets
     ## in the input file and those in the data to be aggregated:
-    aggcheck(mapfile,setfile)
+    aggcheck(mapfile, setfile)
     ## Aggregates the data to the sectors, regions and endowments in
     ## gmap.har:
     if(file.exists(dir)==FALSE){

@@ -50,14 +50,8 @@ set
     DTRAD_COMM #traded commodities#
     read elements from file DSETS header "H2";
 
-!NV, 7/11/2024" Changed H6 to ENDZ!
-![[!
 SET DENDW_COMM  # ENDOWMENT COMMODITIES # 
     READ ELEMENTS FROM FILE DSETS HEADER "H6";
-!]]!
-
-SET DENDW_COMM  # ENDOWMENT COMMODITIES # 
-    READ ELEMENTS FROM FILE DSETS HEADER "ENDZ";
 
 set
     CGDS_COMM #capital goods#

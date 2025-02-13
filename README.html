@@ -605,58 +605,95 @@ padding-top: 0px;
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <h2 id="overview">Overview</h2>
-<p><code>gtapshapeagg</code> is an R package that implements <a href="(https://www.gtap.agecon.purdue.edu/databases/flexagg2.asp)"><strong>FlexAgg2</strong></a>,
-to aggregate the regions and countries of the GTAP database using a
-standard aggregation template written as a GEMPACK text file.</p>
-<p><code>gtapshapeagg</code> provides additional functionality to split
-the regional land rents in the standard GTAP database to subnational
-boundaries, such as Agroecological Zones. The package is designed to
-work seamlessly with files produced by the <code>gtapshapeagg</code>
-package.</p>
 <p><code>gtapshapeagg</code> takes advantage of R’s scripting
-capabilities to organize the execution of several GEMPACK programs. The
-source code of these programs is provided with
-<code>gtapshapeagg</code>. To make them operational they must be
-compiled by running <code>setup_gtapshapeagg()</code>.
-<code>setup_gtapshapeagg()</code> creates fortran executable files of
-the needed gempack programs and places them in the subfolder
-<code>gempack</code> in the current working directory [i.e.,
-<code>getwd()</code>]. The workflow assumes that the computer is already
-setup to <a href="https://www.copsmodels.com/gpinstall.pdf">compile
-source-code GEPMPACK programs</a> and the user is responsible for
-securing the necessary sofware licences.</p>
-<h2 id="installation">Installation</h2>
+capabilities to organize the execution of several GEMPACK programs that
+(1) split the regional land rents in the standard GTAP database to
+subnational boundaries, such as Agroecological Zones, and (2) aggregate
+the regions and countries of the GTAP database with subnational land
+rents using a standard aggregation template written as a GEMPACK text
+file. The package is designed to work seamlessly with files produced by
+the <code>gtapshapeagg</code> package and should be considered its
+companion.</p>
+<p><code>gtapshapeagg</code> relies on modified versions of the programs
+of <a href="(https://www.gtap.agecon.purdue.edu/databases/flexagg2.asp)"><strong>FlexAgg2</strong></a>,
+to aggregate the regions and countries of the standard GTAP database.
+The land rents are dissagregated a program graciously provided by the
+GTAP center.</p>
+<p>The source code of these programs is provided with
+<code>gtapshapeagg</code>, in the folder <code>inst/tablo</code>. To
+make them operational they must be compiled by running
+<code>setup_gtapshapeagg()</code>. <code>setup_gtapshapeagg()</code>
+creates fortran executable files of the needed gempack programs and
+places them in the subfolder <code>gempack</code> in the current working
+directory [i.e., <code>getwd()</code>]. The workflow assumes that the
+computer is already setup to <a href="https://www.copsmodels.com/gpinstall.pdf">compile source-code
+GEPMPACK programs</a> and that the user is has secured the necessary
+sofware licences.</p>
+<h2 id="installation">Installation`</h2>
 <p>You can install the development version of <code>gtapshapeagg</code>
 directly from GitHub using the following commands:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Install devtools if you don&#39;t already have it</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="do">## Install devtools if you don&#39;t already have it</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Install gtapshapeagg from GitHub</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;nvilloria/gtapshapeagg&quot;</span>)</span></code></pre></div>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="do">## Install gtapshapeagg from GitHub</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;nvilloria/gtapshapeagg&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="do">## Setup gtapshapeagg (compile tablo programs, if they are not</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="do">## compiled--they will be placed in the folder `gempack` in the</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="do">## current directory [i.e., getwd()]):</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="fu">setup_gtapshapeagg</span>()</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="do">## For testers/reviewers, unzip `gsdgdat11cMV6.har` (password protected):</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="fu">unzip_gtapdata</span>()</span></code></pre></div>
 <h2 id="usage">Usage</h2>
+<p>The package is designed to work seamlessly with two files. One is a
+file with eight headers that contain land cover and land use data by
+subnational boundary and region. The other file has the sets (regions,
+products, and subnational boundaries.) These files are created by
+<code>gtapshape</code>. In addition, the program requires a fully
+disagregated standard gtap database with its standard sets. If a
+regional or sectoral aggregation is required, the parameter file of the
+standard GTAP database need to be provided.</p>
+<p>The required files can be in any directory specified by the user. In
+order to make <code>gtapshapeagg</code> self-contained, we have
+prepackaged data and set files for 18 AEZs as well as the standard GTAP
+database V11c, GTAP Model V6 including parameters, and sets. The GTAP
+database is password protected and we will not share the password, so
+please do not ask. For the programs to run, licensed users should
+specify the location (path file) of their har file.</p>
 <p>Here’s a basic example of how to use <code>gtapshapeagg</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load the package</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(gtapshapeagg)</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Example 1: Using FlexAgg functionality</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co"># Example 2: Splitting national land rents into subnational boundaries</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="fu">splitlr</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    <span class="at">landdat =</span> <span class="st">&quot;./from-gtapshape/gtaplulc.har&quot;</span>,<span class="do">## From gtapshape</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="at">landsets =</span> <span class="st">&quot;./from-gtapshape/gtaplulc-sets.har&quot;</span>,  <span class="do">## From gtapshape</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">stdgtapsets=</span><span class="st">&quot;./GTAPv11c/gsdgset11cMV6.har&quot;</span>, <span class="co"># &lt;- Standard GTAP database</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">stdgtapdata=</span><span class="st">&quot;./GTAPv11c/gsdgdat11cMV6.har&quot;</span> , <span class="co"># &lt;- Standard GTAP database</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    <span class="at">dir=</span> <span class="st">&quot;AEZ18v11c&quot;</span> <span class="co"># &lt;- Directory where to output landgtapsets and landgtapdat</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>)</span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;mappings&quot;</span>, <span class="st">&quot;my_agg_AEZ18.txt&quot;</span>, <span class="at">package =</span> <span class="st">&quot;gtapshapeagg&quot;</span>)</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="fu">createdat</span>(<span class="at">mapfile =</span> m, <span class="do">## Aggregation mapping</span></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>          <span class="at">setfile =</span> <span class="st">&quot;./AEZ18v11c/landgtapsets.har&quot;</span>, <span class="do">## from splitlr()</span></span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>          <span class="at">datfile =</span> <span class="st">&quot;./AEZ18v11c/landgtapdat.har&quot;</span>, <span class="do">## from splitlr()</span></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>          <span class="at">stdprm =</span>  <span class="st">&quot;./GTAPv11c/gsdgpar11cMV6.har&quot;</span>, <span class="co"># Standard GTAP parameters</span></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>          <span class="at">dir =</span> <span class="st">&quot;My_18AEZagg&quot;</span> <span class="do">## Directory with aggregated data</span></span>
-<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>          )</span></code></pre></div>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Example: Splitting national land rents into subnational boundaries</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">splitlr</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="co"># This is the data file with LULC by subantional boundaries,</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="co"># regions and products, created by gtapshape:</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    <span class="at">landdat =</span> <span class="fu">system.file</span>(<span class="st">&quot;from-gtapshape&quot;</span>, <span class="st">&quot;gtaplulc-aez18.har&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>                          <span class="at">package =</span> <span class="st">&quot;gtapshapeagg&quot;</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="do">## These are the LULC sets from gtapshape</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">landsets =</span> <span class="fu">system.file</span>(<span class="st">&quot;from-gtapshape&quot;</span>, <span class="st">&quot;gtaplulc-aez18-sets.har&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>                           <span class="at">package =</span> <span class="st">&quot;gtapshapeagg&quot;</span>),</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>    <span class="co"># Standard GTAP sets</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    <span class="at">stdgtapsets =</span> <span class="fu">system.file</span>(<span class="st">&quot;GTAPv11c&quot;</span>, <span class="st">&quot;gsdgset11cMV6.har&quot;</span>, <span class="at">package =</span> <span class="st">&quot;gtapshapeagg&quot;</span>), </span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>    <span class="co"># Standard GTAP database</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>    <span class="at">stdgtapdata =</span> <span class="fu">system.file</span>(<span class="st">&quot;GTAPv11c&quot;</span>, <span class="st">&quot;gsdgdat11cMV6.har&quot;</span>, <span class="at">package =</span> <span class="st">&quot;gtapshapeagg&quot;</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>    <span class="co"># Directory where to output landgtapsets and landgtapdat</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>    <span class="at">dir=</span> <span class="st">&quot;AEZ18v11c&quot;</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>)</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">createdat</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>    <span class="at">mapfile =</span> <span class="fu">system.file</span>(<span class="st">&quot;mappings&quot;</span>, <span class="st">&quot;my_agg_AEZ18.txt&quot;</span>, <span class="at">package =</span> <span class="st">&quot;gtapshapeagg&quot;</span>),</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>    <span class="at">setfile =</span> <span class="st">&quot;./AEZ18v11c/landgtapsets.har&quot;</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>    <span class="at">datfile =</span> <span class="st">&quot;./AEZ18v11c/landgtapdat.har&quot;</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>    <span class="do">## Standard GTAP parameters</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>    <span class="at">stdprm =</span>  <span class="fu">system.file</span>(<span class="st">&quot;GTAPv11c&quot;</span>, <span class="st">&quot;gsdgpar11cMV6.har&quot;</span>, <span class="at">package =</span> <span class="st">&quot;gtapshapeagg&quot;</span>),</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>    <span class="do">## Directory with aggregated data</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>    <span class="at">dir =</span> <span class="st">&quot;My_18AEZagg&quot;</span> </span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a>)</span></code></pre></div>
+<p>The arguments <code>landdat</code>, <code>landset</code> and
+<code>mapfile</code> read the respective outputs created from
+<code>gtapshape</code>.</p>
 <h2 id="license">License</h2>
 <p>This package is licensed under the MIT License. See the
 <code>LICENSE.md</code> file for details.</p>

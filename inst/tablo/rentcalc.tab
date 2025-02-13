@@ -1212,7 +1212,7 @@ longname "GTAP v.9 Regions";
 longname "Agro-ecological Zones (AEZs)";
 (SET) PROD_COMM TO FILE gtaplulcset HEADER "PROD" 
 longname "Production Commodities";
-(SET) AEZ_ENDW TO FILE gtaplulcset HEADER "ENDZ" 
+(SET) AEZ_ENDW TO FILE gtaplulcset HEADER "H6" 
 longname "Endowment Commodities + Land in  AEZs";
 (SET) AGFRS_GTAP TO FILE gtaplulcset HEADER "AGFR" 
 longname "Agriculture + Forestry Sectors (13)";

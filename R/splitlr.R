@@ -4,16 +4,13 @@
 #' to split land rent and generate GTAP land use data.
 #'
 #' @param landdat Character string. Path to the land use and cover
-#'     data file.
+#'     data file created by `gtapshapeagg`.
 #' @param landsets Character string. Path to the sets file for land
-#'     use data.
+#'     use data created by `gtapshapeagg`.
 #' @param stdgtapsets Character string. Path to the sets and mapping
 #'     data file for Standard GTAP v.11c.
 #' @param stdgtapdata Character string. Path to the Standard GTAP
 #'     v.11c data file.
-## #' @param forestdata Character string. Path to the DGTM raw data file
-## #'     (timberland area, forest carbon stock, and forestry
-## #'     rents). (provided in package inst/har)
 #' @param dir Character string. Directory name for output files.
 #'
 #' @details
