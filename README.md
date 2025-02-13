@@ -17,8 +17,8 @@ package and should be considered its companion.
 `gtapshapeagg` relies on modified versions of the programs of
 [**FlexAgg2**]((https://www.gtap.agecon.purdue.edu/databases/flexagg2.asp)),
 to aggregate the regions and countries of the standard GTAP database.
-The land rents are dissagregated a program graciously provided by the
-GTAP center.
+The land rents are dissagregated using a program graciously provided by
+the GTAP center.
 
 The source code of these programs is provided with `gtapshapeagg`, in
 the folder `inst/tablo`. To make them operational they must be compiled
@@ -30,7 +30,7 @@ in the subfolder `gempack` in the current working directory \[i.e.,
 programs](https://www.copsmodels.com/gpinstall.pdf) and that the user is
 has secured the necessary sofware licences.
 
-## Installation\`
+## Installation
 
 You can install the development version of `gtapshapeagg` directly from
 GitHub using the following commands:

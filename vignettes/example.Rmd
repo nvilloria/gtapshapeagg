@@ -1,0 +1,44 @@
+---
+title: "Example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Here’s a basic example of how to use `gtapshapeagg`:
+
+```{r, include = TRUE, eval=FALSE}
+# Load the package
+library(gtapshapeagg)
+
+# Example: Splitting national land rents into subnational boundaries
+splitlr(
+    # This is the data file with LULC by subantional boundaries,
+    # regions and products, created by gtapshape:
+    landdat = system.file("from-gtapshape", "gtaplulc-aez18.har",
+                          package = "gtapshapeagg"),
+    ## These are the LULC sets from gtapshape
+    landsets = system.file("from-gtapshape", "gtaplulc-aez18-sets.har",
+                           package = "gtapshapeagg"),
+    # Standard GTAP sets
+    stdgtapsets = system.file("GTAPv11c", "gsdgset11cMV6.har", package = "gtapshapeagg"), 
+    # Standard GTAP database
+    stdgtapdata = system.file("GTAPv11c", "gsdgdat11cMV6.har", package = "gtapshapeagg"),
+    # Directory where to output landgtapsets and landgtapdat
+    dir= "AEZ18v11c"
+)
+
+g <- createdat(
+    mapfile = system.file("mappings", "my_agg_AEZ18.txt", package = "gtapshapeagg"),
+    setfile = "./AEZ18v11c/landgtapsets.har",
+    datfile = "./AEZ18v11c/landgtapdat.har",
+    ## Standard GTAP parameters
+    stdprm =  system.file("GTAPv11c", "gsdgpar11cMV6.har", package = "gtapshapeagg"),
+    ## Directory with aggregated data
+    dir = "My_18AEZagg" 
+)
+```
+
+The arguments `landdat`, `landset` and `mapfile` read the respective outputs created from `gtapshape`.

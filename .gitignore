@@ -1,6 +1,8 @@
-inst/doc
 *.*~
 *.Rhistory
 *~
 gsdgdat11cMV6.har
 gtapdat_pwd.txt
+inst/doc
+/doc/
+/Meta/
