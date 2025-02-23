@@ -44,7 +44,7 @@ from GitHub using the following commands:
 install.packages("devtools")
 
 ## Install gtapshapeagg from GitHub
-devtools::install_github("nvilloria/gtapshapeagg")
+devtools::install_github("nvilloria/gtapshapeagg", build_vignettes = TRUE)
 
 ## Setup gtapshapeagg (compile tablo programs, if they are not
 ## compiled--they will be placed in the folder `gempack` in the
