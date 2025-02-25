@@ -1,3 +1,16 @@
+#' Copy .tab Files to a Destination Directory
+#'
+#' This function copies .tab files from the package's 'extdata/tablo' directory
+#' to a specified destination directory.
+#'
+#' @param dest_folder The name of the destination folder. Defaults to "gempack".
+#'   The folder will be created inside the current working directory (getwd()).
+#' @param extension The file extension to copy. Defaults to "tab".
+#'
+#' @return Invisibly returns a character vector of the full paths of the
+#'   successfully copied files.  Also prints a message to the console
+#'   indicating the number of files copied.
+#'
 #' @export
 copy_files_to_dir <- function(dest_folder = "gempack", extension = "tab") {
   # Get the path to the extdata directory

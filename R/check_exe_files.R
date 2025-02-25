@@ -18,16 +18,6 @@
 #'
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' result <- check_exe_files()
-#' print(result$existing)
-#' print(result$missing)
-#' }
-#'
-#' @seealso
-#' \code{\link{copy_files_to_dir}}
-#'
 check_exe_files <- function(dest_folder="gempack") {
 
   # Check if the gempack folder is present. If it is not, create, copy

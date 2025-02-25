@@ -36,7 +36,3 @@ The function performs the following steps:
 This function assumes that the 'lines' variable containing the file
 content is available in the environment where the function is called.
 }
-\examples{
-# Assuming 'lines' contains the file content
-values <- extract.values("header \"H2\"")
-}

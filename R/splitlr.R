@@ -36,7 +36,7 @@ splitlr  <- function(landdat = NULL,
                      dir){
     ## Check if stdgtapdata file exists
     if (!file.exists(stdgtapdata)) {
-        message("The GTAP database file was not found. If you want to use the GTAP Database V11c (2017, GTAP V6) distributed with this package, you need to run unzip_gtapdata(). This function will prompt you for a password. Otherwise, you need to provide your own data.")
+        message("The GTAP database file ('stdgtapdata') was not found. If you want to use the GTAP Database V11c (2017, GTAP V6) distributed with this package, you need to run unzip_gtapdata(). This function will prompt you for a password. Otherwise, you need to provide your own data.")
         return(invisible(NULL))  # Exit the function early
     }
     if(file.exists(dir)==FALSE){

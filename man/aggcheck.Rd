@@ -41,12 +41,6 @@ Output files:
 \item aggcheck.har: Temporary file created by aggcheck command (removed after execution)
 }
 }
-\examples{
-\dontrun{
-aggcheck("path/to/mapfile.txt", "path/to/setfile.har")
-}
-
-}
 \seealso{
-\code{\link{txt2map}}
+\code{\link{maptext2har}}
 }

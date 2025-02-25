@@ -27,13 +27,8 @@
 #'
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' aggcheck("path/to/mapfile.txt", "path/to/setfile.har")
-#' }
-#'
 #' @seealso
-#' \code{\link{txt2map}}
+#' \code{\link{maptext2har}}
 #'
 aggcheck <- function(mapfile,setfile){
     maptext2har(mapfile)

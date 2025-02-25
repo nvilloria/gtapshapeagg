@@ -23,9 +23,6 @@
 #' @note This function assumes that the 'lines' variable containing the file
 #'   content is available in the environment where the function is called.
 #'
-#' @examples
-#' # Assuming 'lines' contains the file content
-#' values <- extract.values("header \"H2\"")
 #'@export
 extract.values <- function(lines, start_pattern) {
   # Find the start of the section

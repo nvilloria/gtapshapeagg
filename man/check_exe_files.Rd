@@ -27,14 +27,3 @@ The function performs the following steps:
 \item Reports on existing and missing executable files.
 }
 }
-\examples{
-\dontrun{
-result <- check_exe_files()
-print(result$existing)
-print(result$missing)
-}
-
-}
-\seealso{
-\code{\link{copy_files_to_dir}}
-}
